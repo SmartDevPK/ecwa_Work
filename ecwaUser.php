@@ -133,23 +133,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label>School Name:</label>
         <select name="school_name" required>
             <option value="">Select a School</option>
-            <option value="University of Lagos">ECWA Theological Seminary, Igbaje</option>
-            <option value="University of Ibadan">JOS ECWA Theological Seminary,Jos </option>
-            <option value="Ahmadu Bello University">ECWA Theological Seminary, Aba</option>
-            <option value="Obafemi Awolowo University">ECWA Theological Seminary, Kagoro</option>
-            <option value="">ECWA Theological Seminary, Karu </option>
-            <option value="Federal University of Technology, Akure">ECWA Theological college, Billiri</option>
-            <option value="">ECWA Theological College, Donga-donga</option>
-            <option value="">ECWA Theological College, Gure</option>
-            <option value="">ECWA Theological College, Kpada</option>
-            <option value="">ECWA Theological College, Oyi </option>
-            <option value="">ECWA Theological College, Tofa</option>
-            <option value="">ECWA Theological College,Zabolo </option>
-            <option value="">ECWA Theological College, Zalanga </option>
-            <option value="">ECWA Theological College, Zambuk</option>
-
-
+            <option value="Bingham University College of Medicine and Allied Health Sciences, Jos">Bingham University
+                College of Medicine and Allied Health Sciences, Jos</option>
+            <option value="ECWA College Of Health Technology, Kagoro">ECWA College Of Health Technology, Kagoro</option>
+            <option value="ECWA College Of Nursing Sciences, Egbe, Kogi State">ECWA College Of Nursing Sciences, Egbe,
+                Kogi State</option>
+            <option value="ECWA International College of Education. Igbaja Kwara State">ECWA International College of
+                Education. Igbaja Kwara State</option>
+            <option value="ECWA International College of Education, Bayara">ECWA International College of Education,
+                Bayara</option>
+            <option value="ECWA International College of Education, Jos">ECWA International College of Education, Jos
+            </option>
+            <option value="ECWA International College of Technology, Jos">ECWA International College of Technology, Jos
+            </option>
+            <option value="ECWA Theological College, Billiri">ECWA Theological College, Billiri</option>
+            <option value="ECWA Theological College, Donga-donga">ECWA Theological College, Donga-donga</option>
+            <option value="ECWA Theological College, Gure">ECWA Theological College, Gure</option>
+            <option value="ECWA Theological College, Kpada">ECWA Theological College, Kpada</option>
+            <option value="ECWA Theological College, Oyi">ECWA Theological College, Oyi</option>
+            <option value="ECWA Theological College, Tofa">ECWA Theological College, Tofa</option>
+            <option value="ECWA Theological College, Zabolo">ECWA Theological College, Zabolo</option>
+            <option value="ECWA Theological College, Zalanga">ECWA Theological College, Zalanga</option>
+            <option value="ECWA Theological College, Zambuk">ECWA Theological College, Zambuk</option>
+            <option value="ECWA Theological Seminary, Aba">ECWA Theological Seminary, Aba</option>
+            <option value="ECWA Theological Seminary, Igbaje">ECWA Theological Seminary, Igbaje</option>
+            <option value="ECWA Theological Seminary, Jos">ECWA Theological Seminary, Jos</option>
+            <option value="ECWA Theological Seminary, Kagoro">ECWA Theological Seminary, Kagoro</option>
+            <option value="ECWA Theological Seminary, Karu">ECWA Theological Seminary, Karu</option>
+            <option value="ECWA Theological Training Institute Adunu">ECWA Theological Training Institute Adunu</option>
+            <option value="ECWA Theological Training Institute Damakasuwa">ECWA Theological Training Institute
+                Damakasuwa</option>
+            <option value="ECWA Theological Training Institute Gelengu">ECWA Theological Training Institute Gelengu
+            </option>
+            <option value="ECWA Theological Training Institute Kogum">ECWA Theological Training Institute Kogum</option>
+            <option value="ECWA Theological Training Institute Kwamiding">ECWA Theological Training Institute Kwamiding
+            </option>
+            <option value="ECWA Theological Training Institute Pisabu">ECWA Theological Training Institute Pisabu
+            </option>
+            <option value="ECWA Theological Training Institute Samaru-Kataf">ECWA Theological Training Institute
+                Samaru-Kataf</option>
         </select>
+
 
         <label>Semester:</label>
         <select name="semester" required>
