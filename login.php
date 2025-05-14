@@ -8,6 +8,9 @@ $dbUser = "root";
 $dbPass = "";
 $dbName = "micsonex_forms";
 
+
+
+
 $conn = new mysqli($host, $dbUser, $dbPass, $dbName, $port);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
