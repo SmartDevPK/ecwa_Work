@@ -1,13 +1,14 @@
 <?php
 session_start();
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Database connection
 $host = "127.0.0.1";
 $port = 3307;
 $dbUser = "root";
 $dbPass = "";
-$dbName = "micsonex_forms";
-
+$dbName = "ecwa_forms";
 
 
 
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "All fields are required.";
     } else {
         // Fetch user by email
-        $stmt = $conn->prepare("SELECT id, password_hash, failed_attempts, last_failed_login FROM admins WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id, password, failed_attempts, last_failed_login FROM admins WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($user['failed_attempts'] >= 3 && $minutesSinceLastFail < 45) {
                 $remaining = 45 - $minutesSinceLastFail;
                 $error = "Too many failed attempts. Please try again after {$remaining} minute(s).";
-            } elseif (password_verify($password, $user['password_hash'])) {
+            } elseif (password_verify($password, $user['password'])) {
                 // Success: Reset login attempts
                 $stmt = $conn->prepare("UPDATE admins SET failed_attempts = 0, last_failed_login = NULL WHERE id = ?");
                 $stmt->bind_param("i", $user['id']);

@@ -1,10 +1,14 @@
 <?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Database connection
 $host = "127.0.0.1";
 $port = 3307;
 $dbUser = "root";
 $dbPass = "";
 $dbName = "ecwa_forms";
+
 $conn = new mysqli($host, $dbUser, $dbPass, $dbName, $port);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -12,15 +16,17 @@ if ($conn->connect_error) {
 
 $message = "";
 
-// Submission handling
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $school_name = $_POST['school_name'];
-    $semester = $_POST['semester'];
     $year = $_POST['year'];
+    $number_of_students = $_POST['number_of_students'];
+    $amount_paid = $_POST['amount_paid'];
 
     $targetDir = "uploads/";
-    if (!file_exists($targetDir))
+    if (!file_exists($targetDir)) {
         mkdir($targetDir, 0777, true);
+    }
 
     $fileName = basename($_FILES["receipt"]["name"]);
     $targetFilePath = $targetDir . time() . '_' . $fileName;
@@ -29,26 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (in_array($fileType, $allowedTypes)) {
         if (move_uploaded_file($_FILES["receipt"]["tmp_name"], $targetFilePath)) {
-            $stmt = $conn->prepare("INSERT INTO user_submissions (school_name, semester, year, receipt_path) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $school_name, $semester, $year, $targetFilePath);
+            $stmt = $conn->prepare("INSERT INTO school_receipt_submissions (school_name, year, number_of_students, amount_paid, receipt) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssids", $school_name, $year, $number_of_students, $amount_paid, $targetFilePath);
+
             if ($stmt->execute()) {
-                $message = "✅ Submission successful!";
+                $message = " Submission successful!";
             } else {
                 $message = " Error saving to database.";
             }
+            $stmt->close();
         } else {
             $message = " Failed to upload file.";
         }
     } else {
-        $message = " Invalid file type.";
+        $message = " Invalid file type. Allowed types: jpg, jpeg, png, pdf.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>User Dashboard</title>
     <style>
         body {
@@ -79,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         input[type="text"],
         input[type="date"],
+        input[type="number"],
         select,
         input[type="file"] {
             width: 100%;
@@ -121,15 +132,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
 
-    <h2>User Dashboard</h2>
+    <h2>School Dashboard</h2>
 
     <?php if ($message): ?>
         <p class="<?= strpos($message, '✅') !== false ? 'msg' : 'error' ?>">
-            <?= $message ?>
+            <?= htmlspecialchars($message) ?>
         </p>
     <?php endif; ?>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" novalidate>
         <label>School Name:</label>
         <select name="school_name" required>
             <option value="">Select a School</option>
@@ -174,19 +185,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 Samaru-Kataf</option>
         </select>
 
+        <br><br>
 
-        <label>Semester:</label>
-        <select name="semester" required>
-            <option value="">Select Semester</option>
-            <option value="First Semester">First Semester</option>
-            <option value="Second Semester">Second Semester</option>
-        </select>
+        <label>Number of Students:</label>
+        <input type="number" name="number_of_students" required min="1" placeholder="Enter number of students">
+
+        <br><br>
+
+        <label>Amount Paid (₦):</label>
+        <input type="number" name="amount_paid" required min="0" step="0.01" placeholder="Enter amount paid">
+
+        <br><br>
 
         <label>Year:</label>
         <input type="date" name="year" required>
 
+        <br><br>
+
         <label>Upload Receipt:</label>
-        <input type="file" name="receipt" required>
+        <input type="file" name="receipt" accept=".jpg,.jpeg,.png,.pdf" required>
+
+        <br><br>
 
         <button type="submit">Submit</button>
     </form>

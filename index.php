@@ -46,7 +46,7 @@
         </div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="animate">ECWA Payment Collection Center for All School Fees</h1>
+                <h1 class="animate">ECWA Education Levy Management System</h1>
                 <p class="slogan animate delay-1">Making school payments easier and faster.</p>
                 <div class="hero-buttons animate delay-3">
                     <a href="#login" class="btn">LOGIN</a>
@@ -147,7 +147,7 @@
         <div class="container">
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
-                    <p>&copy; 2025 ECWA. All Rights Reserved.</p>
+                    <p>(c) 2025 ECWA Education. All rights reserved</p>
                     <div class="legal-links">
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Service</a>

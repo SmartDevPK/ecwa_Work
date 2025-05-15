@@ -13,8 +13,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get table name from URL parameter
-$table = isset($_GET['table']) ? $_GET['table'] : '';
+// Get table name from URL parameter and sanitize it
+$table = isset($_GET['table']) ? preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['table']) : '';
 
 if (empty($table)) {
     die("No table specified.");
@@ -26,15 +26,30 @@ if ($checkTable->num_rows === 0) {
     die("Table '$table' does not exist in the database.");
 }
 
-// Query data from the specified table
-$sql = "SELECT * FROM `$table`";
+// Get column names except 'password'
+$columns = [];
+$colResult = $conn->query("SHOW COLUMNS FROM `$table`");
+while ($col = $colResult->fetch_assoc()) {
+    if ($col['Field'] !== 'password') {
+        $columns[] = "`" . $conn->real_escape_string($col['Field']) . "`";
+    }
+}
+
+if (empty($columns)) {
+    die("No displayable columns found.");
+}
+
+$columnList = implode(', ', $columns);
+$sql = "SELECT $columnList FROM `$table`";
 $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>View Table - <?php echo htmlspecialchars($table); ?></title>
     <style>
         body {
@@ -100,6 +115,26 @@ $result = $conn->query($sql);
         .download-link:hover {
             text-decoration: underline;
         }
+
+        .download-summary-button {
+            display: inline-block;
+            background: #27ae60;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 30px auto 0;
+            text-align: center;
+        }
+
+        .download-summary-button:hover {
+            background: #219150;
+        }
+
+        .button-container {
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -107,45 +142,52 @@ $result = $conn->query($sql);
 
     <h1>Records from '<?php echo htmlspecialchars($table); ?>'</h1>
 
-    <?php
-    if ($result && $result->num_rows > 0) {
-        echo "<table>";
-        echo "<tr>";
-        // Output column headers
-        while ($fieldInfo = $result->fetch_field()) {
-            echo "<th>" . htmlspecialchars($fieldInfo->name) . "</th>";
-        }
-        echo "<th>Receipt Action</th>"; // Extra column for download/view link
-        echo "</tr>";
+    <?php if ($result && $result->num_rows > 0): ?>
+        <table>
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($columns as $colName) {
+                        // Remove backticks before display
+                        $cleanName = str_replace('`', '', $colName);
+                        echo "<th>" . htmlspecialchars($cleanName) . "</th>";
+                    }
+                    ?>
+                    <th>Receipt Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <?php foreach ($row as $key => $value): ?>
+                            <td><?php echo htmlspecialchars($value); ?></td>
+                        <?php endforeach; ?>
 
-        // Output table rows
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            foreach ($row as $key => $cell) {
-                echo "<td>" . htmlspecialchars($cell) . "</td>";
-            }
-
-            // Check for a receipt file path
-            if (isset($row['receipt_path']) && !empty($row['receipt_path'])) {
-                $receipt = htmlspecialchars($row['receipt_path']);
-                $file = urlencode(basename($receipt));
-                echo "<td><a class='download-link' href='download.php?file={$file}'>Download PDF</a></td>";
-            } else {
-                echo "<td>N/A</td>";
-            }
-
-            echo "</tr>";
-        }
-
-        echo "</table>";
-    } else {
-        echo "<p style='text-align:center; color:red;'>No records found in table '$table'.</p>";
-    }
-
-    $conn->close();
-    ?>
+                        <td>
+                            <?php if (!empty($row['receipt'])): ?>
+                                <?php $file = urlencode(basename($row['receipt'])); ?>
+                                <a class="download-link" href="download.php?file=<?php echo $file; ?>">Download PDF</a>
+                            <?php else: ?>
+                                N/A
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p style="text-align:center; color:red;">No records found in table '<?php echo htmlspecialchars($table); ?>'.</p>
+    <?php endif; ?>
 
     <p class="login-link"><a href="dashboard.php">← Return to Dashboard</a></p>
+
+    <div class="button-container">
+        <a href="download_summary.php?table=<?php echo urlencode($table); ?>" class="download-summary-button">
+            Download Full Summary (CSV)
+        </a>
+    </div>
+
+    <?php $conn->close(); ?>
 
 </body>
 

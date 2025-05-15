@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
                 // Insert admin into DB
-                $stmt = $conn->prepare("INSERT INTO admins (username, email, password_hash, created_at) VALUES (?, ?, ?, NOW())");
+                $stmt = $conn->prepare("INSERT INTO admins (username, email, password, created_at) VALUES (?, ?, ?, NOW())");
                 $stmt->bind_param("sss", $username, $email, $hashedPassword);
                 if ($stmt->execute()) {
                     $success = "Admin account created successfully!";
