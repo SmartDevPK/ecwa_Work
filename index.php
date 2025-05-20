@@ -61,11 +61,7 @@
         <div class="container">
             <h3 class="section-title animate">Register</h3>
             <form id="registerForm" action="process_form.php">
-                <div class="form-group">
-                    <label for="reg-username">Username</label>
-                    <input type="text" id="reg-username" name="username" required />
-                    <input type="hidden" name="form_type" value="register" />
-                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="reg-email">Email</label>

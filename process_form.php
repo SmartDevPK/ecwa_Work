@@ -1,21 +1,21 @@
 <?php
 session_start();
 
-// Enable error reporting for debugging
+// Enable error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database configuration
+// DB config
 $db_host = 'localhost';
 $db_port = '3307';
 $db_name = 'ecwa_forms';
 $db_user = 'root';
 $db_pass = '';
 
-// Initialize response array
+// Response structure
 $response = ['success' => false, 'message' => ''];
 
-// Validate form type exists
+// Ensure form_type is set
 if (!isset($_POST['form_type'])) {
     echo json_encode(['success' => false, 'message' => 'Form type is required']);
     exit;
@@ -24,42 +24,39 @@ if (!isset($_POST['form_type'])) {
 $form_type = trim($_POST['form_type']);
 
 try {
-    // Create database connection
+    // Connect to DB
     $pdo = new PDO("mysql:host=$db_host;port=$db_port;dbname=$db_name", $db_user, $db_pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     switch ($form_type) {
         case 'register':
-            // Validate required fields
-            $required = ['username', 'email', 'password'];
+            // Validate fields
+            $required = ['email', 'password'];
             foreach ($required as $field) {
                 if (empty($_POST[$field])) {
                     throw new Exception("All fields are required for registration");
                 }
             }
 
-            $username = trim($_POST['username']);
             $email = trim($_POST['email']);
             $password = $_POST['password'];
 
-            // Validate email format
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Invalid email address format");
             }
 
-            // Check for existing user
-            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email OR username = :username");
-            $stmt->execute([':email' => $email, ':username' => $username]);
+            // Check if user exists
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
+            $stmt->execute([':email' => $email]);
 
             if ($stmt->fetch()) {
-                throw new Exception("Email or username already in use");
+                throw new Exception("Email already in use");
             }
 
-            // Create new user
+            // Insert user
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-            $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+            $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
             $stmt->execute([
-                ':username' => $username,
                 ':email' => $email,
                 ':password' => $hashedPassword
             ]);
@@ -71,7 +68,6 @@ try {
             break;
 
         case 'login':
-            // Validate required fields
             if (empty($_POST['email']) || empty($_POST['password'])) {
                 throw new Exception("Email and password are required");
             }
@@ -79,19 +75,15 @@ try {
             $email = trim($_POST['email']);
             $password = $_POST['password'];
 
-            // Get user from database
-            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = :email");
+            $stmt = $pdo->prepare("SELECT id, password FROM users WHERE email = :email");
             $stmt->execute([':email' => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Verify credentials
             if (!$user || !password_verify($password, $user['password'])) {
                 throw new Exception("Invalid email or password");
             }
 
-            // Set session variables
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
 
             $response = [
                 'success' => true,
@@ -101,7 +93,6 @@ try {
             break;
 
         case 'contact':
-            // Validate required fields
             $required = ['contact_name', 'contact_email', 'contact_message'];
             foreach ($required as $field) {
                 if (empty($_POST[$field])) {
@@ -115,12 +106,10 @@ try {
             $subject = trim($_POST['contact_subject'] ?? '');
             $message = trim($_POST['contact_message']);
 
-            // Validate email format
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Invalid email address format");
             }
 
-            // Save contact message
             $stmt = $pdo->prepare("INSERT INTO contact_submissions 
                 (contact_name, contact_email, contact_phone, contact_subject, contact_message, submission_date) 
                 VALUES (:name, :email, :phone, :subject, :message, NOW())");
@@ -149,7 +138,7 @@ try {
     $response['message'] = $e->getMessage();
 }
 
-// Return JSON response
+// Return response
 header('Content-Type: application/json');
 echo json_encode($response);
 exit;
