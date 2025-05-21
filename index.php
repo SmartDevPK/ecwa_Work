@@ -91,12 +91,19 @@
                 <div class="form-group">
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" name="password" required />
+                    <!-- Forgot password link -->
+                    <div style="text-align: right; margin-top: 5px;">
+                        <a href="forgot_password.php" style="font-size: 0.9rem; color: #007bff; text-decoration: none;">
+                            Forgot Password?
+                        </a>
+                    </div>
                 </div>
                 <button type="submit" class="btn">Login</button>
                 <div class="form-response" id="loginResponse"></div>
             </form>
         </div>
     </section>
+
 
     <!-- Contact Section -->
     <section id="contact" class="section-padding">
