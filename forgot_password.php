@@ -81,6 +81,20 @@ session_start();
     .success {
         color: green;
     }
+
+    .login-link {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .login-link a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
 </style>
 
 <body>
@@ -102,6 +116,8 @@ session_start();
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <button type="submit">Reset Password</button>
+            <p class="login-link"><a href="index.php">Return To Home Page</a></p>
+
         </form>
     </div>
 </body>

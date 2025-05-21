@@ -95,6 +95,20 @@ if (!isset($_GET['token'])) {
             color: green;
             margin-bottom: 20px;
         }
+
+        .login-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -130,6 +144,9 @@ if (!isset($_GET['token'])) {
 
             <!-- Submit Button -->
             <button type="submit">Reset Password</button>
+            <p class="login-link"><a href="index.php">Return To Home Page</a></p>
+            <p class="login-link"><a href="login.php">Login</a></p>
+
         </form>
     </div>
 </body>

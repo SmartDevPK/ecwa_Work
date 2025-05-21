@@ -57,93 +57,97 @@
     </section>
 
     <!-- Register Section -->
-    <section id="register" class="section-padding">
-        <div class="container">
-            <h3 class="section-title animate">Register</h3>
-            <form id="registerForm" action="process_form.php">
+    <form id="registerForm" action="process_form.php" method="POST">
+        <section id="register" class="section-padding">
+            <div class="container">
+                <h3 class="section-title animate">Register</h3>
+                <form id="registerForm" action="process_form.php">
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="reg-email">Email</label>
-                        <input type="email" id="reg-email" name="email" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="reg-password">Password</label>
-                        <input type="password" id="reg-password" name="password" required />
-                    </div>
-                </div>
-                <button type="submit" class="btn">Register</button>
-                <div class="form-response" id="registerResponse"></div>
-            </form>
-        </div>
-    </section>
-
-    <!-- Login Section -->
-    <section id="login" class="section-padding">
-        <div class="container">
-            <h3 class="section-title animate">Login</h3>
-            <form id="loginForm" action="process_form.php">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" name="email" required />
-                    <input type="hidden" name="form_type" value="login" />
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" required />
-                    <!-- Forgot password link -->
-                    <div style="text-align: right; margin-top: 5px;">
-                        <a href="forgot_password.php" style="font-size: 0.9rem; color: #007bff; text-decoration: none;">
-                            Forgot Password?
-                        </a>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Login</button>
-                <div class="form-response" id="loginResponse"></div>
-            </form>
-        </div>
-    </section>
-
-
-    <!-- Contact Section -->
-    <section id="contact" class="section-padding">
-        <div class="container">
-            <h2 class="section-title animate">Contact Us</h2>
-            <p class="section-subtitle animate delay-1">
-                Get in touch with our team for any inquiries or special requests
-            </p>
-            <div class="contact-form animate delay-3">
-                <h3>Send Us a Message</h3>
-                <form id="contactForm" action="process_form.php">
-                    <div class="form-group">
-                        <label for="contact-name">Full Name</label>
-                        <input type="text" id="contact-name" name="contact_name" required />
-                        <input type="hidden" name="form_type" value="contact" />
-                    </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="contact-email">Email</label>
-                            <input type="email" id="contact-email" name="contact_email" required />
+                            <label for="reg-email">Email</label>
+                            <input type="email" id="reg-email" name="email" required />
                         </div>
                         <div class="form-group">
-                            <label for="contact-phone">Phone Number</label>
-                            <input type="tel" id="contact-phone" name="contact_phone" required />
+                            <label for="reg-password">Password</label>
+                            <input type="password" id="reg-password" name="password" required />
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="contact-subject">Subject</label>
-                        <input type="text" id="contact-subject" name="contact_subject" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-message">Message</label>
-                        <textarea id="contact-message" name="contact_message" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn">Send Message</button>
-                    <div class="form-response" id="contactResponse"></div>
+                    <input type="hidden" name="form_type" value="register" />
+                    <button type="submit" class="btn">Register</button>
+                    <div class="form-response" id="registerResponse"></div>
                 </form>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Login Section -->
+        <section id="login" class="section-padding">
+            <div class="container">
+                <h3 class="section-title animate">Login</h3>
+                <form id="loginForm" action="process_form.php">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="email" required />
+                        <input type="hidden" name="form_type" value="login" />
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" required />
+                        <!-- Forgot password link -->
+                        <div style="text-align: right; margin-top: 5px;">
+                            <a href="forgot_password.php"
+                                style="font-size: 0.9rem; color: #007bff; text-decoration: none;">
+                                Forgot Password?
+                            </a>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                    <div class="form-response" id="loginResponse"></div>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="section-padding">
+            <div class="container">
+                <h2 class="section-title animate">Contact Us</h2>
+                <p class="section-subtitle animate delay-1">
+                    Get in touch with our team for any inquiries or special requests
+                </p>
+                <div class="contact-form animate delay-3">
+                    <h3>Send Us a Message</h3>
+                    <form id="contactForm" action="process_form.php">
+                        <div class="form-group">
+                            <label for="contact-name">Full Name</label>
+                            <input type="text" id="contact-name" name="contact_name" required />
+                            <input type="hidden" name="form_type" value="contact" />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact-email">Email</label>
+                                <input type="email" id="contact-email" name="contact_email" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">Phone Number</label>
+                                <input type="tel" id="contact-phone" name="contact_phone" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-subject">Subject</label>
+                            <input type="text" id="contact-subject" name="contact_subject" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-message">Message</label>
+                            <textarea id="contact-message" name="contact_message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Message</button>
+                        <div class="form-response" id="contactResponse"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </form>
 
     <!-- Footer -->
     <footer class="footer">

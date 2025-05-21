@@ -127,6 +127,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: red;
             font-weight: bold;
         }
+
+        .login-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -208,6 +222,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <br><br>
 
         <button type="submit">Submit</button>
+        <p class="login-link"><a href="index.php">Return To Home Page</a></p>
+
     </form>
 
 </body>

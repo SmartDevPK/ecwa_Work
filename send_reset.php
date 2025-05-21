@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->store_result();
 
     if ($stmt->num_rows === 0) {
-        // Email not found in either table
         $_SESSION['error'] = "No account found with that email address.";
         header("Location: forgot_password.php");
         exit();
@@ -59,15 +58,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = bin2hex(random_bytes(50));
     $expiry = date("Y-m-d H:i:s", time() + 3600);
 
-    // Store token and expiry in registration table (assuming registration holds emails)
-    $updateStmt = $conn->prepare("UPDATE registration SET reset_token = ?, reset_token_expiry = ? WHERE email = ?");
+    // Determine which table contains the email
+    $tableToUpdate = '';
+
+    $stmtUser = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmtUser->bind_param("s", $email);
+    $stmtUser->execute();
+    $stmtUser->store_result();
+
+    if ($stmtUser->num_rows > 0) {
+        $tableToUpdate = 'users';
+    } else {
+        $stmtAdmin = $conn->prepare("SELECT id FROM admins WHERE email = ?");
+        $stmtAdmin->bind_param("s", $email);
+        $stmtAdmin->execute();
+        $stmtAdmin->store_result();
+
+        if ($stmtAdmin->num_rows > 0) {
+            $tableToUpdate = 'admins';
+        }
+    }
+
+    if ($tableToUpdate === '') {
+        $_SESSION['error'] = "No account found with that email address.";
+        header("Location: forgot_password.php");
+        exit();
+    }
+
+    // Update reset token and expiry in the appropriate table
+    $updateSQL = "UPDATE $tableToUpdate SET reset_token = ?, reset_token_expiry = ? WHERE email = ?";
+    $updateStmt = $conn->prepare($updateSQL);
     if (!$updateStmt) {
         die("Prepare failed: " . $conn->error);
     }
     $updateStmt->bind_param("sss", $token, $expiry, $email);
     $updateStmt->execute();
 
-    // Prepare and send password reset email
+    // Send password reset email
     $mail = new PHPMailer(true);
 
     try {
@@ -81,23 +108,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mail->setFrom($_ENV['EMAIL_USERNAME'], 'ECWA Education Levy Management System');
         $mail->addAddress($email);
-
         $mail->isHTML(true);
         $mail->Subject = "Password Reset Request";
 
         $resetLink = "http://localhost/Ecwawork/reset_form.php?token=$token";
-
         $mail->Body = "
             <p>Click the link below to reset your password:</p>
             <p><a href='$resetLink' style='padding: 10px; background-color: blue; color: white; text-decoration: none;'>Reset Password</a></p>
             <p>If you did not request this, please ignore this email.</p>
         ";
 
-        if ($mail->send()) {
-            $_SESSION['message'] = "A password reset link has been sent to your email.";
-        } else {
-            $_SESSION['error'] = "Failed to send the reset link. Please try again.";
-        }
+        $mail->send();
+        $_SESSION['message'] = "A password reset link has been sent to your email.";
     } catch (Exception $e) {
         $_SESSION['error'] = "Mailer Error: " . $mail->ErrorInfo;
     }
