@@ -22,13 +22,12 @@ $success = '';
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
     // Validate inputs
-    if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
+    if (empty($email) || empty($password) || empty($confirm_password)) {
         $error = "All fields are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
@@ -55,21 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$valid) {
             $error = $validationError;
         } else {
-            // Check if admin already exists
-            $stmt = $conn->prepare("SELECT id FROM admins WHERE email = ? OR username = ?");
-            $stmt->bind_param("ss", $email, $username);
+            // Check if admin already exists (only by email now)
+            $stmt = $conn->prepare("SELECT id FROM admins WHERE email = ?");
+            $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
-                $error = "Username or email already exists.";
+                $error = "Email already exists.";
             } else {
                 // Hash password securely
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
                 // Insert admin into DB
-                $stmt = $conn->prepare("INSERT INTO admins (username, email, password, created_at) VALUES (?, ?, ?, NOW())");
-                $stmt->bind_param("sss", $username, $email, $hashedPassword);
+                $stmt = $conn->prepare("INSERT INTO admins (email, password_hash, created_at) VALUES (?, ?, NOW())");
+                $stmt->bind_param("ss", $email, $hashedPassword);
                 if ($stmt->execute()) {
                     $success = "Admin account created successfully!";
                     header("Location: login.php");
@@ -81,10 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
 ?>
-
-
 
 <!DOCTYPE html>
 <html>
@@ -169,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="message success"><?php echo htmlspecialchars($success); ?></p>
         <?php endif; ?>
         <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
             <input type="password" name="confirm_password" placeholder="Confirm Password" required>

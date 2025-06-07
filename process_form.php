@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 
 // DB config
 $db_host = 'localhost';
-$db_port = '3307';
+$db_port = 3307;
 $db_name = 'ecwa_forms';
 $db_user = 'root';
 $db_pass = '';
